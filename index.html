@@ -2,6 +2,7 @@
 
 <html lang="en">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -11,115 +12,46 @@
 
 <style>
 
-:root{
---primary:#833ab4;
---secondary:#fd1d1d;
---accent:#fcb045;
---bg:#0f172a;
---card:#1e293b;
---text:#f8fafc;
---muted:#94a3b8;
-}
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Poppins;
-}
-
 body{
-background:var(--bg);
-color:var(--text);
-min-height:100vh;
+font-family:Poppins,sans-serif;
+background:#0f172a;
+color:white;
 display:flex;
-flex-direction:column;
-align-items:center;
-}
-
-/* NAVBAR */
-
-nav{
-width:100%;
-padding:20px 40px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#1e293b;
-}
-
-.logo{
-font-size:22px;
-font-weight:700;
-background:linear-gradient(45deg,var(--accent),var(--secondary),var(--primary));
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
-
-/* ADS */
-
-.ad{
-width:100%;
-max-width:728px;
-height:90px;
-margin:25px auto;
-display:flex;
-align-items:center;
 justify-content:center;
-border:1px dashed #334155;
-border-radius:12px;
-color:var(--muted);
+align-items:center;
+height:100vh;
+margin:0;
 }
 
-/* MAIN */
-
-main{
-width:100%;
-max-width:800px;
-padding:40px 20px;
+.box{
+background:#1e293b;
+padding:40px;
+border-radius:15px;
 text-align:center;
+width:400px;
 }
 
 h1{
-font-size:2.8rem;
-margin-bottom:10px;
-}
-
-.subtitle{
-color:var(--muted);
-margin-bottom:30px;
-}
-
-/* BOX */
-
-.box{
-background:var(--card);
-border-radius:18px;
-padding:30px;
-box-shadow:0 10px 25px rgba(0,0,0,0.4);
+margin-bottom:20px;
 }
 
 input{
 width:100%;
-padding:18px;
-border-radius:10px;
-border:1px solid #334155;
-background:#020617;
-color:white;
-font-size:16px;
+padding:15px;
+border:none;
+border-radius:8px;
 margin-bottom:15px;
-outline:none;
+font-size:15px;
 }
 
 button{
 width:100%;
-padding:18px;
+padding:15px;
 border:none;
-border-radius:10px;
-font-size:17px;
-font-weight:600;
-background:linear-gradient(45deg,var(--primary),var(--secondary));
+border-radius:8px;
+background:linear-gradient(45deg,#833ab4,#fd1d1d);
 color:white;
+font-size:16px;
 cursor:pointer;
 }
 
@@ -127,40 +59,10 @@ button:hover{
 opacity:.9;
 }
 
-/* RESULT */
-
-#result{
-display:none;
-margin-top:25px;
-}
-
-#media img,#media video{
-max-width:100%;
-border-radius:10px;
-margin-bottom:15px;
-}
-
-.download{
-display:inline-block;
-background:var(--accent);
-color:black;
-padding:12px 24px;
-border-radius:8px;
-text-decoration:none;
-font-weight:600;
-}
-
-/* FOOTER */
-
-footer{
-margin-top:auto;
-padding:20px;
-color:var(--muted);
-font-size:14px;
-}
-
-@media(max-width:600px){
-h1{font-size:2rem;}
+.footer{
+margin-top:20px;
+font-size:12px;
+opacity:.6;
 }
 
 </style>
@@ -169,113 +71,39 @@ h1{font-size:2rem;}
 
 <body>
 
-<nav>
-<div class="logo">InstaFetch</div>
-</nav>
-
-<div class="ad">Advertisement Space</div>
-
-<main>
-
-<h1>Download Instagram Media</h1>
-<p class="subtitle">Reels • Posts • Videos • Photos</p>
-
 <div class="box">
 
-<input id="url" type="url" placeholder="Paste Instagram link here">
+<h1>InstaFetch</h1>
 
-<button onclick="downloadMedia()">Fetch Media</button>
+<input id="link" placeholder="Paste Instagram Reel / Post link">
 
-<div id="result">
+<button onclick="download()">Download</button>
 
-<div id="media"></div>
-
-<a id="downloadBtn" class="download" target="_blank">
-Download File
-</a>
-
+<div class="footer">
+Public accounts only
 </div>
 
 </div>
-
-</main>
-
-<div class="ad">Advertisement Space</div>
-
-<footer>
-© 2026 InstaFetch – Not affiliated with Instagram
-</footer>
 
 <script>
 
-async function downloadMedia(){
+function download(){
 
-let url=document.getElementById("url").value;
+let url=document.getElementById("link").value;
 
 if(!url){
 alert("Paste Instagram link");
 return;
 }
 
-let api=`https://api.allorigins.win/raw?url=https://snapinsta.app/action.php?url=${encodeURIComponent(url)}`;
+let downloader="https://snapinsta.app/?url="+encodeURIComponent(url);
 
-try{
-
-let res=await fetch(api);
-
-let html=await res.text();
-
-let parser=new DOMParser();
-
-let doc=parser.parseFromString(html,"text/html");
-
-let video=doc.querySelector("video");
-
-let image=doc.querySelector("img");
-
-let media=document.getElementById("media");
-
-let result=document.getElementById("result");
-
-let downloadBtn=document.getElementById("downloadBtn");
-
-if(video){
-
-media.innerHTML=`<video src="${video.src}" controls></video>`;
-
-downloadBtn.href=video.src;
-
-}
-
-else if(image){
-
-media.innerHTML=`<img src="${image.src}">`;
-
-downloadBtn.href=image.src;
-
-}
-
-else{
-
-alert("Media not found");
-
-return;
-
-}
-
-result.style.display="block";
-
-}
-
-catch(e){
-
-alert("Error fetching media");
-
-}
+window.open(downloader,"_blank");
 
 }
 
 </script>
 
 </body>
+
 </html>
