@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InstaFetch - High Quality Instagram Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #833ab4;
+            --secondary: #fd1d1d;
+            --accent: #fcb045;
+            --bg-color: #0f172a;
+            --surface: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Navbar */
+        nav {
+            width: 100%;
+            padding: 20px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--accent), var(--secondary), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Ad Containers - Clean & Non-Intrusive */
+        .ad-container {
+            width: 100%;
+            max-width: 728px;
+            height: 90px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 800px;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
+
+        h1 { font-size: 3rem; margin-bottom: 10px; }
+        p.subtitle { color: var(--text-muted); margin-bottom: 30px; }
+
+        /* Input Area - Glassmorphism */
+        .download-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            border-radius: 20px;
+            padding: 30px;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .type-selector {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+
+        .type-btn {
+            background: var(--surface);
+            color: var(--text-main);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 8px 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 14px;
+        }
+
+        .type-btn.active, .type-btn:hover {
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            border-color: transparent;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 18px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(0,0,0,0.2);
+            color: white;
+            font-size: 16px;
+            outline: none;
+            transition: border 0.3s;
+        }
+
+        input[type="url"]:focus { border-color: var(--primary); }
+
+        .btn-download {
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-download:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(253, 29, 29, 0.3);
+        }
+
+        .disclaimer { font-size: 12px; color: var(--text-muted); margin-top: 15px; }
+
+        /* Loader */
+        .loader {
+            display: none;
+            border: 4px solid rgba(255,255,255,0.1);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Result Area */
+        #result-area {
+            margin-top: 30px;
+            display: none;
+            width: 100%;
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        #result-media { max-width: 100%; border-radius: 8px; margin-bottom: 15px; }
+        .btn-save {
+            display: inline-block;
+            background: var(--accent);
+            color: #000;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer { padding: 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
+
+        @media(max-width: 600px) { h1 { font-size: 2rem; } }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo"><i class="fa-brands fa-instagram"></i> InstaFetch</div>
+    </nav>
+
+    <div class="ad-container">
+        <span>Advertisement Widget Space (728x90)</span>
+    </div>
+
+    <main>
+        <h1>Download Instantly</h1>
+        <p class="subtitle">Save Reels, Stories, Posts, Highlights & Profile Photos in high quality.</p>
+
+        <div class="download-box">
+            <div class="type-selector">
+                <button class="type-btn active" onclick="setType('Reel', this)">Reel</button>
+                <button class="type-btn" onclick="setType('Post', this)">Post</button>
+                <button class="type-btn" onclick="setType('Story', this)">Story</button>
+                <button class="type-btn" onclick="setType('Profile', this)">Profile Photo</button>
+            </div>
+
+            <form id="downloadForm" class="input-group">
+                <input type="url" id="igUrl" placeholder="Paste Instagram Link Here..." required>
+                <button type="submit" class="btn-download" id="submitBtn">
+                    <span id="btnText">Fetch Media</span>
+                    <div class="loader" id="loader"></div>
+                </button>
+                <p class="disclaimer"><i class="fa-solid fa-lock-open"></i> Works with public accounts only.</p>
+            </form>
+
+            <div id="result-area">
+                <img id="result-media" src="" alt="Fetched Media Preview">
+                <br>
+                <a href="#" id="download-link" class="btn-save" download><i class="fa-solid fa-download"></i> Download File</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="ad-container">
+        <span>Advertisement Widget Space (Responsive)</span>
+    </div>
+
+    <footer>
+        &copy; 2026 InstaFetch. This tool is not affiliated with Instagram.
+    </footer>
+
+    <script>
+        let currentType = 'Reel';
+
+        function setType(type, element) {
+            currentType = type;
+            document.querySelectorAll('.type-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        document.getElementById('downloadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const urlInput = document.getElementById('igUrl').value;
+            const btnText = document.getElementById('btnText');
+            const loader = document.getElementById('loader');
+            const resultArea = document.getElementById('result-area');
+            
+            // UI Loading state
+            btnText.style.display = 'none';
+            loader.style.display = 'block';
+            resultArea.style.display = 'none';
+
+            /* * IMPORTANT: GITHUB PAGES CANNOT SCRAPE INSTAGRAM DIRECTLY.
+             * You must replace the URL below with a real Instagram Scraper API endpoint.
+             * Example: Find an "Instagram Downloader API" on RapidAPI.com.
+             */
+            
+            try {
+                // MOCK API CALL - Replace this fetch block with your chosen API integration
+                const response = await simulateApiCall(urlInput); 
+                
+                // Show Result
+                document.getElementById('result-media').src = response.thumbnail;
+                document.getElementById('download-link').href = response.downloadUrl;
+                resultArea.style.display = 'block';
+
+            } catch (error) {
+                alert("Error fetching media. Ensure the link is correct and the account is public.");
+            } finally {
+                // Reset UI
+                btnText.style.display = 'block';
+                loader.style.display = 'none';
+            }
+        });
+
+        // This function simply mimics an API delay for testing the UI
+        function simulateApiCall(url) {
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    resolve({
+                        thumbnail: 'https://via.placeholder.com/400x400/1e293b/833ab4?text=Media+Ready',
+                        downloadUrl: '#' // The real API will provide the .mp4 or .jpg link here
+                    });
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>
