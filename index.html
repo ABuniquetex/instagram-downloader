@@ -221,74 +221,92 @@
         &copy; 2026 InstaFetch. Not affiliated with Instagram.
     </footer>
 
-    <script>
-        document.getElementById('downloadForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const urlInput = document.getElementById('igUrl').value;
-            const btnText = document.getElementById('btnText');
-            const loader = document.getElementById('loader');
-            const resultArea = document.getElementById('result-area');
-            const mediaContainer = document.getElementById('media-container');
-            const downloadLink = document.getElementById('download-link');
-            
-            // UI Loading state
-            btnText.style.display = 'none';
-            loader.style.display = 'block';
-            resultArea.style.display = 'none';
-            mediaContainer.innerHTML = ''; // Clear previous results
+  <script>
+document.getElementById('downloadForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-            // ==========================================================
-            // !!! IMPORTANT: YOUR RAPIDAPI CONFIGURATION GOES HERE !!!
-            // ==========================================================
-            // Go to rapidapi.com, search "Instagram Downloader", subscribe to a free tier.
-            // Replace the URL, x-rapidapi-key, and x-rapidapi-host with your provided details.
-            
-            const options = {
-                method: 'GET',
-                headers: {
-                    // PUT YOUR REAL RAPIDAPI KEY HERE:
-                    'x-rapidapi-key': 'YOUR_RAPIDAPI_KEY_HERE', 
-                    // PUT THE RAPIDAPI HOST HERE:
-                    'x-rapidapi-host': 'instagram-scraper-api2.p.rapidapi.com' 
-                }
-            };
+    const urlInput = document.getElementById('igUrl').value;
+    const btnText = document.getElementById('btnText');
+    const loader = document.getElementById('loader');
+    const resultArea = document.getElementById('result-area');
+    const mediaContainer = document.getElementById('media-container');
+    const downloadLink = document.getElementById('download-link');
 
-            try {
-                // If you haven't put your API key in yet, this will fail and show an error.
-                // Replace this URL with the actual endpoint URL the RapidAPI dashboard gives you.
-                const response = await fetch(`https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${encodeURIComponent(urlInput)}`, options);
-                
-                if (!response.ok) {
-                    throw new Error("API request failed. Did you enter your RapidAPI key?");
-                }
+    btnText.style.display = 'none';
+    loader.style.display = 'block';
+    resultArea.style.display = 'none';
+    mediaContainer.innerHTML = '';
 
-                const data = await response.json();
+    const options = {
+        method: 'GET',
+        headers: {
+            'x-rapidapi-key': 'YOUR_RAPIDAPI_KEY_HERE',
+            'x-rapidapi-host': 'instagram-scraper-api2.p.rapidapi.com'
+        }
+    };
 
-                // NOTE: Different APIs return data in different structures. 
-                // You may need to change `data.data.video_url` depending on the API you choose.
-                const mediaUrl = data.data.video_url || data.data.thumbnail_url || data.data.image_versions2.candidates[0].url; 
-                const isVideo = mediaUrl.includes('.mp4') || data.data.video_url;
+    try {
 
-                // Dynamically create Video or Image player
-                if (isVideo) {
-                    mediaContainer.innerHTML = `<video src="${mediaUrl}" controls autoplay muted></video>`;
-                } else {
-                    mediaContainer.innerHTML = `<img src="${mediaUrl}" alt="Instagram Media">`;
-                }
+        const response = await fetch(
+            `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${encodeURIComponent(urlInput)}`,
+            options
+        );
 
-                // Set up the download button to point to the actual media URL
-                downloadLink.href = mediaUrl;
-                resultArea.style.display = 'block';
+        if (!response.ok) throw new Error("API request failed");
 
-            } catch (error) {
-                console.error(error);
-                alert("Error: " + error.message + " \n\n(If you haven't added your RapidAPI key in the code yet, the downloads will not work!)");
-            } finally {
-                // Reset UI
-                btnText.style.display = 'block';
-                loader.style.display = 'none';
+        const data = await response.json();
+
+        let mediaUrl = null;
+        let isVideo = false;
+
+        // VIDEO
+        if (data.data.video_url) {
+            mediaUrl = data.data.video_url;
+            isVideo = true;
+        }
+
+        // IMAGE
+        else if (data.data.image_versions2?.candidates?.length) {
+            mediaUrl = data.data.image_versions2.candidates[0].url;
+        }
+
+        // CAROUSEL
+        else if (data.data.carousel_media?.length) {
+            const item = data.data.carousel_media[0];
+
+            if (item.video_versions) {
+                mediaUrl = item.video_versions[0].url;
+                isVideo = true;
+            } else {
+                mediaUrl = item.image_versions2.candidates[0].url;
             }
-        });
-    </script>
+        }
+
+        if (!mediaUrl) throw new Error("Media not found");
+
+        // Preview player
+        if (isVideo) {
+            mediaContainer.innerHTML =
+                `<video src="${mediaUrl}" controls autoplay muted></video>`;
+        } else {
+            mediaContainer.innerHTML =
+                `<img src="${mediaUrl}" alt="Instagram Media">`;
+        }
+
+        // Force download
+        downloadLink.href = mediaUrl;
+        downloadLink.setAttribute("download", "instagram-media");
+
+        resultArea.style.display = 'block';
+
+    } catch (error) {
+        console.error(error);
+        alert("Error fetching media. Check API key or link.");
+    }
+
+    btnText.style.display = 'block';
+    loader.style.display = 'none';
+});
+</script>
 </body>
 </html>
