@@ -1,312 +1,281 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InstaFetch - High Quality Instagram Downloader</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        :root {
-            --primary: #833ab4;
-            --secondary: #fd1d1d;
-            --accent: #fcb045;
-            --bg-color: #0f172a;
-            --surface: #1e293b;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; }
+<title>InstaFetch - Instagram Downloader</title>
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-        /* Navbar */
-        nav {
-            width: 100%;
-            padding: 20px 50px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-        }
+<style>
 
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--accent), var(--secondary), var(--primary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+:root{
+--primary:#833ab4;
+--secondary:#fd1d1d;
+--accent:#fcb045;
+--bg:#0f172a;
+--card:#1e293b;
+--text:#f8fafc;
+--muted:#94a3b8;
+}
 
-        /* Ad Containers - Clean & Non-Intrusive */
-        .ad-container {
-            width: 100%;
-            max-width: 728px;
-            height: 90px;
-            margin: 20px auto;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins;
+}
 
-        /* Main Content */
-        main {
-            flex: 1;
-            width: 100%;
-            max-width: 800px;
-            padding: 40px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
+body{
+background:var(--bg);
+color:var(--text);
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+}
 
-        h1 { font-size: 3rem; margin-bottom: 10px; }
-        p.subtitle { color: var(--text-muted); margin-bottom: 30px; }
+/* NAVBAR */
 
-        /* Input Area - Glassmorphism */
-        .download-box {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(16px);
-            border-radius: 20px;
-            padding: 30px;
-            width: 100%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+nav{
+width:100%;
+padding:20px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#1e293b;
+}
 
-        .input-group {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
+.logo{
+font-size:22px;
+font-weight:700;
+background:linear-gradient(45deg,var(--accent),var(--secondary),var(--primary));
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
 
-        input[type="url"] {
-            width: 100%;
-            padding: 18px 20px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.2);
-            background: rgba(0,0,0,0.2);
-            color: white;
-            font-size: 16px;
-            outline: none;
-            transition: border 0.3s;
-        }
+/* ADS */
 
-        input[type="url"]:focus { border-color: var(--primary); }
+.ad{
+width:100%;
+max-width:728px;
+height:90px;
+margin:25px auto;
+display:flex;
+align-items:center;
+justify-content:center;
+border:1px dashed #334155;
+border-radius:12px;
+color:var(--muted);
+}
 
-        .btn-download {
-            background: linear-gradient(45deg, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
+/* MAIN */
 
-        .btn-download:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(253, 29, 29, 0.3);
-        }
+main{
+width:100%;
+max-width:800px;
+padding:40px 20px;
+text-align:center;
+}
 
-        .disclaimer { font-size: 12px; color: var(--text-muted); margin-top: 15px; }
+h1{
+font-size:2.8rem;
+margin-bottom:10px;
+}
 
-        /* Loader */
-        .loader {
-            display: none;
-            border: 4px solid rgba(255,255,255,0.1);
-            border-top: 4px solid var(--accent);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-        }
+.subtitle{
+color:var(--muted);
+margin-bottom:30px;
+}
 
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+/* BOX */
 
-        /* Result Area */
-        #result-area {
-            margin-top: 30px;
-            display: none;
-            width: 100%;
-            background: var(--surface);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-        }
+.box{
+background:var(--card);
+border-radius:18px;
+padding:30px;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
 
-        #media-container video, #media-container img {
-            max-width: 100%;
-            max-height: 400px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        }
+input{
+width:100%;
+padding:18px;
+border-radius:10px;
+border:1px solid #334155;
+background:#020617;
+color:white;
+font-size:16px;
+margin-bottom:15px;
+outline:none;
+}
 
-        .btn-save {
-            display: inline-block;
-            background: var(--accent);
-            color: #000;
-            padding: 12px 25px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            margin-top: 10px;
-        }
+button{
+width:100%;
+padding:18px;
+border:none;
+border-radius:10px;
+font-size:17px;
+font-weight:600;
+background:linear-gradient(45deg,var(--primary),var(--secondary));
+color:white;
+cursor:pointer;
+}
 
-        footer { padding: 20px; text-align: center; color: var(--text-muted); font-size: 14px; }
+button:hover{
+opacity:.9;
+}
 
-        @media(max-width: 600px) { h1 { font-size: 2rem; } }
-    </style>
+/* RESULT */
+
+#result{
+display:none;
+margin-top:25px;
+}
+
+#media img,#media video{
+max-width:100%;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+.download{
+display:inline-block;
+background:var(--accent);
+color:black;
+padding:12px 24px;
+border-radius:8px;
+text-decoration:none;
+font-weight:600;
+}
+
+/* FOOTER */
+
+footer{
+margin-top:auto;
+padding:20px;
+color:var(--muted);
+font-size:14px;
+}
+
+@media(max-width:600px){
+h1{font-size:2rem;}
+}
+
+</style>
+
 </head>
+
 <body>
 
-    <nav>
-        <div class="logo"><i class="fa-brands fa-instagram"></i> InstaFetch</div>
-    </nav>
+<nav>
+<div class="logo">InstaFetch</div>
+</nav>
 
-    <div class="ad-container">
-        <span>Advertisement Widget Space (728x90)</span>
-    </div>
+<div class="ad">Advertisement Space</div>
 
-    <main>
-        <h1>Download Instantly</h1>
-        <p class="subtitle">Save Reels, Stories, Posts, Highlights & Profile Photos in high quality.</p>
+<main>
 
-        <div class="download-box">
-            <form id="downloadForm" class="input-group">
-                <input type="url" id="igUrl" placeholder="Paste Instagram Link Here..." required>
-                <button type="submit" class="btn-download" id="submitBtn">
-                    <span id="btnText">Fetch Media</span>
-                    <div class="loader" id="loader"></div>
-                </button>
-                <p class="disclaimer"><i class="fa-solid fa-lock-open"></i> Works with public accounts only.</p>
-            </form>
+<h1>Download Instagram Media</h1>
+<p class="subtitle">Reels • Posts • Videos • Photos</p>
 
-            <div id="result-area">
-                <div id="media-container"></div>
-                <br>
-                <a href="#" id="download-link" class="btn-save" target="_blank"><i class="fa-solid fa-download"></i> Download / View File</a>
-            </div>
-        </div>
-    </main>
+<div class="box">
 
-    <div class="ad-container">
-        <span>Advertisement Widget Space (Responsive)</span>
-    </div>
+<input id="url" type="url" placeholder="Paste Instagram link here">
 
-    <footer>
-        &copy; 2026 InstaFetch. Not affiliated with Instagram.
-    </footer>
+<button onclick="downloadMedia()">Fetch Media</button>
 
-  <script>
-document.getElementById('downloadForm').addEventListener('submit', async function(e) {
-    e.preventDefault();
+<div id="result">
 
-    const urlInput = document.getElementById('igUrl').value;
-    const btnText = document.getElementById('btnText');
-    const loader = document.getElementById('loader');
-    const resultArea = document.getElementById('result-area');
-    const mediaContainer = document.getElementById('media-container');
-    const downloadLink = document.getElementById('download-link');
+<div id="media"></div>
 
-    btnText.style.display = 'none';
-    loader.style.display = 'block';
-    resultArea.style.display = 'none';
-    mediaContainer.innerHTML = '';
+<a id="downloadBtn" class="download" target="_blank">
+Download File
+</a>
 
-    const options = {
-        method: 'GET',
-        headers: {
-            'x-rapidapi-key': 'YOUR_RAPIDAPI_KEY_HERE',
-            'x-rapidapi-host': 'instagram-scraper-api2.p.rapidapi.com'
-        }
-    };
+</div>
 
-    try {
+</div>
 
-        const response = await fetch(
-            `https://instagram-scraper-api2.p.rapidapi.com/v1/post_info?code_or_id_or_url=${encodeURIComponent(urlInput)}`,
-            options
-        );
+</main>
 
-        if (!response.ok) throw new Error("API request failed");
+<div class="ad">Advertisement Space</div>
 
-        const data = await response.json();
+<footer>
+© 2026 InstaFetch – Not affiliated with Instagram
+</footer>
 
-        let mediaUrl = null;
-        let isVideo = false;
+<script>
 
-        // VIDEO
-        if (data.data.video_url) {
-            mediaUrl = data.data.video_url;
-            isVideo = true;
-        }
+async function downloadMedia(){
 
-        // IMAGE
-        else if (data.data.image_versions2?.candidates?.length) {
-            mediaUrl = data.data.image_versions2.candidates[0].url;
-        }
+let url=document.getElementById("url").value;
 
-        // CAROUSEL
-        else if (data.data.carousel_media?.length) {
-            const item = data.data.carousel_media[0];
+if(!url){
+alert("Paste Instagram link");
+return;
+}
 
-            if (item.video_versions) {
-                mediaUrl = item.video_versions[0].url;
-                isVideo = true;
-            } else {
-                mediaUrl = item.image_versions2.candidates[0].url;
-            }
-        }
+let api=`https://api.allorigins.win/raw?url=https://snapinsta.app/action.php?url=${encodeURIComponent(url)}`;
 
-        if (!mediaUrl) throw new Error("Media not found");
+try{
 
-        // Preview player
-        if (isVideo) {
-            mediaContainer.innerHTML =
-                `<video src="${mediaUrl}" controls autoplay muted></video>`;
-        } else {
-            mediaContainer.innerHTML =
-                `<img src="${mediaUrl}" alt="Instagram Media">`;
-        }
+let res=await fetch(api);
 
-        // Force download
-        downloadLink.href = mediaUrl;
-        downloadLink.setAttribute("download", "instagram-media");
+let html=await res.text();
 
-        resultArea.style.display = 'block';
+let parser=new DOMParser();
 
-    } catch (error) {
-        console.error(error);
-        alert("Error fetching media. Check API key or link.");
-    }
+let doc=parser.parseFromString(html,"text/html");
 
-    btnText.style.display = 'block';
-    loader.style.display = 'none';
-});
+let video=doc.querySelector("video");
+
+let image=doc.querySelector("img");
+
+let media=document.getElementById("media");
+
+let result=document.getElementById("result");
+
+let downloadBtn=document.getElementById("downloadBtn");
+
+if(video){
+
+media.innerHTML=`<video src="${video.src}" controls></video>`;
+
+downloadBtn.href=video.src;
+
+}
+
+else if(image){
+
+media.innerHTML=`<img src="${image.src}">`;
+
+downloadBtn.href=image.src;
+
+}
+
+else{
+
+alert("Media not found");
+
+return;
+
+}
+
+result.style.display="block";
+
+}
+
+catch(e){
+
+alert("Error fetching media");
+
+}
+
+}
+
 </script>
+
 </body>
 </html>
